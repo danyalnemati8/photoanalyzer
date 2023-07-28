@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Instagram Photo Analyzer</title>
+</head>
+<body>
+    {% if 'access_token' in session %}
+        <h1>Welcome to Instagram Photo Analyzer</h1>
+        <a href="{{ url_for('logout') }}">Logout</a>
+        <ul>
+            {% for photo in photos %}
+                <li>
+                    <img src="{{ photo.url }}" alt="Photo">
+                    <ul>
+                        <li>Detected Objects: {{ photo.analysis.objects|join(', ') }}</li>
+                        <li>Dominant Colors: {{ photo.analysis.colors|join(', ') }}</li>
+                        <li>Sentiment: {{ photo.analysis.sentiment }}</li>
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h1>Please Login</h1>
+        <a href="{{ url_for('login') }}">Login with Instagram</a>
+    {% endif %}
+</body>
+</html>
