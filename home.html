@@ -2,28 +2,92 @@
 <html>
 <head>
     <title>Instagram Photo Analyzer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
 
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        .photo-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .photo-item {
+            margin: 10px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            max-width: 300px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        h3 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    {% if 'access_token' in session %}
-        <h1>Welcome to Instagram Photo Analyzer</h1>
-        <a href="{{ url_for('logout') }}">Logout</a>
-        <ul>
+    <h1>Welcome to Instagram Photo Analyzer</h1>
+
+    {% if photos %}
+        <h2>Your Photos:</h2>
+        <div class="photo-gallery">
             {% for photo in photos %}
-                <li>
-                    <img src="{{ photo.url }}" alt="Photo">
+                <div class="photo-item">
+                    <img src="{{ photo.media_url }}" alt="Photo">
+                    <p><strong>Caption:</strong> {{ photo.caption }}</p>
+                    <p><strong>Timestamp:</strong> {{ photo.timestamp }}</p>
+                    <p><strong>Media Type:</strong> {{ photo.media_type }}</p>
+
+                    <h3>Analysis:</h3>
                     <ul>
-                        <li>Detected Objects: {{ photo.analysis.objects|join(', ') }}</li>
-                        <li>Dominant Colors: {{ photo.analysis.colors|join(', ') }}</li>
-                        <li>Sentiment: {{ photo.analysis.sentiment }}</li>
+                        {% for obj in photo.analysis.objects %}
+                            <li>{{ obj }}</li>
+                        {% endfor %}
                     </ul>
-                </li>
+                    <p><strong>Colors:</strong> {{ photo.analysis.colors | join(', ') }}</p>
+                    <p><strong>Sentiment:</strong> {{ photo.analysis.sentiment }}</p>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <h1>Please Login</h1>
-        <a href="{{ url_for('login') }}">Login with Instagram</a>
+        <p>No photos to display. Please log in with your Instagram account.</p>
     {% endif %}
+    
+    <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>

@@ -24,11 +24,25 @@ dummy_photos = [
     # Add more dummy photos here...
 ]
 
+import requests
+
 # Replace this with actual API integration to fetch photos using the access token
 def fetch_user_photos(access_token):
-    # In a real app, use the access_token to make API requests to fetch user photos
-    # For this example, we'll return the dummy photos
-    return dummy_photos
+    base_url = 'https://graph.instagram.com'
+    api_version = 'v12.0'
+    media_endpoint = f'{base_url}/{api_version}/me/media'
+    params = {
+        'access_token': access_token,
+        'fields': 'id,caption,media_type,media_url,permalink,thumbnail_url,timestamp',
+    }
+    response = requests.get(media_endpoint, params=params)
+
+    if response.status_code == 200:
+        return response.json().get('data', [])
+    else:
+        # Handle API error or empty response
+        return []
+
 
 @app.route('/')
 def index():
